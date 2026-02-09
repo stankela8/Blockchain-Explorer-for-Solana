@@ -180,3 +180,19 @@ def slot_detail(request, slot: int):
         "tx_sigs": tx_sigs[:50],  # cap for UI
     }
     return render(request, "explorer/slot_detail.html", ctx)
+
+def api_basic_stats(request):
+    """
+    JSON API endpoint za basic Solana statistics.
+    Frontend ga može zvati za prikaz kartica / grafova.
+    """
+    try:
+        from .solana_rpc import get_basic_stats
+        data = get_basic_stats()
+    except SolanaRPCError:
+        return JsonResponse(
+            {"error": "RPC unavailable"},
+            status=503
+        )
+
+    return JsonResponse(data)
